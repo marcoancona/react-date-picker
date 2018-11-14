@@ -347,6 +347,7 @@ export default class DateInput extends PureComponent {
         if (!previousInput && onPrevNavigation) onPrevNavigation();
         break;
       }
+      case 'Tab':
       case 'ArrowRight':
       case this.divider: {
         event.preventDefault();

@@ -24,6 +24,7 @@ export default class DatePicker extends PureComponent {
   }
 
   state = {};
+  inputRef = React.createRef();
 
   get eventProps() {
     return makeEventProps(this.props);
@@ -46,6 +47,10 @@ export default class DatePicker extends PureComponent {
   openCalendar = () => {
     this.setState({ isOpen: true });
   }
+
+	focusOn = (elementName) => {
+		if (this.inputRef.current) this.inputRef.current.focusOn(elementName);
+	}
 
   closeCalendar = () => {
     this.setState((prevState) => {
@@ -105,6 +110,8 @@ export default class DatePicker extends PureComponent {
       required,
       showLeadingZeros,
       value,
+			onPrevNavigation,
+			onNextNavigation
     } = this.props;
     const { isOpen } = this.state;
 
@@ -113,6 +120,7 @@ export default class DatePicker extends PureComponent {
     return (
       <div className={`${baseClassName}__wrapper`}>
         <DateInput
+          ref={this.inputRef}
           className={`${baseClassName}__inputGroup`}
           disabled={disabled}
           locale={locale}
@@ -122,6 +130,8 @@ export default class DatePicker extends PureComponent {
           minDate={minDate}
           name={name}
           onChange={this.onChange}
+          onNextNavigation={onNextNavigation}
+          onPrevNavigation={onPrevNavigation}
           returnValue={returnValue}
           required={required}
           showLeadingZeros={showLeadingZeros}
@@ -281,6 +291,8 @@ DatePicker.propTypes = {
   returnValue: PropTypes.oneOf(['start', 'end', 'range']),
   required: PropTypes.bool,
   showLeadingZeros: PropTypes.bool,
+	onPrevNavigation: PropTypes.func,
+	onNextNavigation: PropTypes.func,
 };
 
 polyfill(DatePicker);

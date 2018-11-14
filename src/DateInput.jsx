@@ -189,6 +189,24 @@ export default class DateInput extends PureComponent {
     return nextState;
   }
 
+  focusOn(elName) {
+    if (elName === 'first' || elName === 'last') {
+      const allInputs = ['yearInput', 'monthInput', 'dayInput'];
+      const elementName = allInputs.find(el => !!this[el]);
+      if (elementName) {
+        let inputEl = this[elementName];
+        const findSibling = elName === 'first' ? findPreviousInput : findNextInput;
+        while (findSibling(inputEl)) {
+          inputEl = findSibling(inputEl);
+        }
+        focus(inputEl);
+      }
+    }
+    else {
+      focus(this[`${elName}Input`]);
+    }
+  }
+
   state = {
     year: null,
     month: null,
@@ -272,7 +290,16 @@ export default class DateInput extends PureComponent {
   }
 
   isValidDate = (date) => {
-    return (date >= (this.props.minDate || defaultMinDate)) && (date <= (this.props.maxDate || defaultMaxDate));
+    const formElements = [this.dayInput, this.monthInput, this.yearInput].filter(Boolean);
+    const isValid = (date >= (this.props.minDate || defaultMinDate)) && (date <= (this.props.maxDate || defaultMaxDate));
+    if (isValid) {
+      formElements.forEach(el => el.setCustomValidity(''));
+      return true;
+    }
+    else {
+      formElements.forEach(el => el.setCustomValidity('Invalid range'));
+      return false;
+    }
   }
 
   onKeyDown = (event) => {
@@ -313,19 +340,21 @@ export default class DateInput extends PureComponent {
       }
       case 'ArrowLeft': {
         event.preventDefault();
-
+        const { onPrevNavigation } = this.props;
         const input = event.target;
         const previousInput = findPreviousInput(input);
         focus(previousInput);
+        if (!previousInput && onPrevNavigation) onPrevNavigation();
         break;
       }
       case 'ArrowRight':
       case this.divider: {
         event.preventDefault();
-
+        const { onNextNavigation } = this.props;
         const input = event.target;
         const nextInput = findNextInput(input);
         focus(nextInput);
+        if (!nextInput && onNextNavigation) onNextNavigation();
         break;
       }
       default:
@@ -377,8 +406,10 @@ export default class DateInput extends PureComponent {
     if (!onChange) {
       return;
     }
-    const processedValue = this.getProcessedValue(proposedValue);
-    return onChange(processedValue, false);
+    if (this.isValidDate(proposedValue)) {
+      const processedValue = this.getProcessedValue(proposedValue);
+      onChange(processedValue, false);
+    }
   }
 
   /**
@@ -405,11 +436,7 @@ export default class DateInput extends PureComponent {
       const proposedValue = new Date(values.year, (values.month || 1) - 1, values.day || 1);
       if (this.isValidDate(proposedValue)) {
         const processedValue = this.getProcessedValue(proposedValue);
-        formElements.forEach(el => el.setCustomValidity(''));
         onChange(processedValue, false);
-      }
-      else {
-        formElements.forEach(el => el.setCustomValidity('Invalid range'));
       }
     }
     else if (activeElement) {
@@ -557,6 +584,8 @@ DateInput.propTypes = {
   minDate: isMinDate,
   name: PropTypes.string,
   onChange: PropTypes.func,
+  onPrevNavigation: PropTypes.func,
+  onNextNavigation: PropTypes.func,
   returnValue: PropTypes.oneOf(['start', 'end', 'range']),
   required: PropTypes.bool,
   showLeadingZeros: PropTypes.bool,

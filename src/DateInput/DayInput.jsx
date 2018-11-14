@@ -27,6 +27,7 @@ export default class DayInput extends PureComponent {
         name={name}
         onChange={onChange}
         onFocus={event => select(event.target)}
+        onMouseDown={(event) => { event.preventDefault(); select(event.target); }}
         onKeyDown={onKeyDown}
         onKeyUp={event => updateInputWidth(event.target)}
         placeholder="--"

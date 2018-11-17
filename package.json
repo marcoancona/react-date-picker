@@ -1,6 +1,6 @@
 {
   "name": "react-date-picker",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "A date picker for your React app.",
   "main": "dist/entry.js",
   "types": "./index.d.ts",
@@ -13,7 +13,6 @@
     "copy-styles": "node ./copy-styles.js",
     "copy-types": "node ./copy-types.js",
     "prepublishOnly": "yarn run clean && yarn run build",
-    "prepare": "npm run clean && npm run build-js && npm run copy-styles && npm run build-styles",
     "test": "yarn run test-eslint && yarn run test-jest",
     "test-eslint": "eslint src/ test/ --ext .jsx,.js",
     "test-jest": "jest",

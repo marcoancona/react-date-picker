@@ -235,26 +235,16 @@ export default class DateInput extends PureComponent {
 
   // eslint-disable-next-line class-methods-use-this
   get divider() {
-    const { locale } = this.props;
-    const date = new Date(2017, 11, 11);
-
-    return (
-      removeUnwantedCharacters(formatDate(date, locale))
-        .match(/[^0-9]/)[0]
-    );
+    return '/';
   }
 
   // eslint-disable-next-line class-methods-use-this
   get placeholder() {
     const { locale } = this.props;
-    const date = new Date(2017, 11, 11);
-
-    return (
-      removeUnwantedCharacters(formatDate(date, locale))
-        .replace('2017', 'year')
-        .replace('12', 'month')
-        .replace('11', 'day')
-    );
+    if (locale === 'en-US') {
+      return 'month/day/year';
+    }
+    return 'day/month/year';
   }
 
   get commonInputProps() {

@@ -542,11 +542,7 @@ var DateInput = function (_PureComponent) {
   }, {
     key: 'divider',
     get: function get() {
-      var locale = this.props.locale;
-
-      var date = new Date(2017, 11, 11);
-
-      return removeUnwantedCharacters((0, _dateFormatter.formatDate)(date, locale)).match(/[^0-9]/)[0];
+      return '/';
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -556,9 +552,10 @@ var DateInput = function (_PureComponent) {
     get: function get() {
       var locale = this.props.locale;
 
-      var date = new Date(2017, 11, 11);
-
-      return removeUnwantedCharacters((0, _dateFormatter.formatDate)(date, locale)).replace('2017', 'year').replace('12', 'month').replace('11', 'day');
+      if (locale === 'en-US') {
+        return 'month/day/year';
+      }
+      return 'day/month/year';
     }
   }, {
     key: 'commonInputProps',
